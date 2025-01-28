@@ -47,6 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
 				if (message.type === 'userInput') {
 					panel.webview.postMessage({ type: 'status', text: 'Thinking...' });
 					
+					console.log('Sending request to API...'); // Debug log
 					// Get current editor context
 					const activeEditor = vscode.window.activeTextEditor;
 					const codeContext = activeEditor?.document.getText() || '';
@@ -56,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 						codeContext,
 						context
 					);
+					console.log('Received response:', response); // Debug log
 					
 					panel.webview.postMessage({ 
 						type: 'response', 
@@ -63,6 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 					});
 				}
 			} catch (error) {
+				console.error('Error details:', error); // Debug log
 				const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
 				panel.webview.postMessage({ 
 					type: 'error', 
@@ -80,31 +83,49 @@ async function callAIApi(
 	codeContext: string, 
 	context: vscode.ExtensionContext
 ): Promise<string> {
-	const apiKey = await context.secrets.get('deepseekKey');
+	let apiKey = await context.secrets.get('deepseekKey');
+	console.log('API Key exists:', !!apiKey); // Debug log
+
 	if (!apiKey) {
-		throw new Error('API key not found');
+		const key = await vscode.window.showInputBox({
+			prompt: 'Enter your Deepseek API key',
+			password: true
+		});
+		if (key) {
+			await context.secrets.store('deepseekKey', key);
+			apiKey = key; // Use the key directly instead of recursing
+		} else {
+			throw new Error('API key is required');
+		}
 	}
 
+	console.log('Making API request...'); // Debug log
 	const openai = new OpenAI({ 
-		apiKey,
-		baseURL: 'https://api.deepseek.com/v1'  // Add Deepseek's base URL
+		apiKey: apiKey,
+		baseURL: 'https://api.deepseek.com'
 	});
 	
-	const completion = await openai.chat.completions.create({
-		messages: [
-			{ 
-				role: "system", 
-				content: "You are a helpful coding assistant. Current code context:\n" + codeContext 
-			},
-			{ 
-				role: "user", 
-				content: userInput 
-			}
-		],
-		model: vscode.workspace.getConfiguration('aiAssistant').get('model') || "gpt-4",
-	});
-
-	return completion.choices[0].message.content || "No response received";
+	try {
+		const completion = await openai.chat.completions.create({
+			messages: [
+				{ 
+					role: "system", 
+					content: "You are a helpful assistant." 
+				},
+				{ 
+					role: "user", 
+					content: userInput 
+				}
+			],
+			model: "deepseek-chat",
+		});
+		
+		console.log('API response received:', completion); // Debug log
+		return completion.choices[0].message.content || "No response received";
+	} catch (error) {
+		console.error('API call error:', error); // Debug log
+		throw error;
+	}
 }
 
 // This method is called when your extension is deactivated
