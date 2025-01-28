@@ -1,0 +1,14 @@
+# Dependencies
+/node_modules
+node_modules/
+
+# VS Code extension build output
+/out
+/dist
+
+# Environment variables
+.env
+
+# Misc
+.DS_Store
+*.log
