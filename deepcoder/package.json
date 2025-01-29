@@ -1,10 +1,12 @@
 {
-  "name": "ai-assistant",
-  "displayName": "AI Coding Assistant",
+  "name": "DeepCoder-assistant",
+  "displayName": "DeepCoder Assistant",
   "description": "DeepCoder is is your intelligent coding companion, seamlessly integrated into VS Code and Cursor. Powered by advanced AI, it provides real-time code suggestions, debugging help, and instant answers to your programming questions—all without leaving your editor. Whether you're writing a new feature, debugging complex logic, or learning a new framework, CodeAI Assistant is here to supercharge your productivity.",
   "version": "1.0.0",
+  "publisher": "your-publisher-name",
+  "icon": "deepcoder.png",
   "engines": {
-    "vscode": "^1.85.0"
+    "vscode": "^1.96.0"
   },
   "categories": [
     "Other"
@@ -48,7 +50,7 @@
   "devDependencies": {
     "@types/mocha": "^10.0.10",
     "@types/node": "20.x",
-    "@types/vscode": "^1.96.0",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^8.17.0",
     "@typescript-eslint/parser": "^8.17.0",
     "@vscode/test-cli": "^0.0.10",

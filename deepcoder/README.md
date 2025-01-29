@@ -1,51 +1,46 @@
-# deepcoder README
+# DeepCoder Assistant
 
-This is the README for your extension "deepcoder". After writing up a brief description, we recommend including the following sections.
+DeepCoder is your intelligent coding companion, seamlessly integrated into VS Code and Cursor. Powered by advanced AI, it provides real-time code suggestions, debugging help, and instant answers to your programming questions—all without leaving your editor. Whether you're writing a new feature, debugging complex logic, or learning a new framework, DeepCoder Assistant is here to supercharge your productivity.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **Real-time Code Suggestions**: Get instant code suggestions as you type.
+- **Debugging Help**: Receive assistance with debugging complex logic.
+- **Instant Answers**: Ask programming questions and get immediate responses.
+- **Seamless Integration**: Works directly within VS Code and Cursor.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Visual Studio Code version 1.96.0 or higher.
+- An active internet connection for AI features.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `aiAssistant.model`: The AI model to use (default: `gpt-4`).
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- List any known issues here.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
+- Initial release of DeepCoder Assistant.
 
-Initial release of ...
+## License
 
-### 1.0.1
+This project is licensed under the MIT License.
 
-Fixed issue #.
+## Installation
 
-### 1.1.0
+1. Install the extension from the Visual Studio Marketplace or by using the `.vsix` file.
+2. Open the command palette (`Ctrl+Shift+P`), and type `Open AI Chat` to start using the assistant.
 
-Added features X, Y, and Z.
+## Usage
+
+- Use the command `Open AI Chat` to interact with the AI assistant.
 
 ---
 
