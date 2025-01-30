@@ -2,7 +2,7 @@
   "name": "deepcoder-assistant",
   "displayName": "DeepCoder Assistant",
   "description": "DeepCoder is is your intelligent coding companion, seamlessly integrated into VS Code and Cursor. Powered by advanced AI, it provides real-time code suggestions, debugging help, and instant answers to your programming questions—all without leaving your editor. Whether you're writing a new feature, debugging complex logic, or learning a new framework, CodeAI Assistant is here to supercharge your productivity.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "AbdulhamidSonaike1",
   "icon": "deepcoder.png",
   "engines": {

@@ -29,7 +29,7 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 1.0.2
+### 1.0.3
 
 - Added a sleek chat interface with real-time code suggestions and debugging help.
 - Improved error handling and user-friendly messages.
