@@ -1,6 +1,4 @@
-Here’s an updated version of your `README.md` with a **contribution-friendly** tone, a clear call-to-action for contributors, and a polished structure. I’ve also made it more engaging and developer-focused while maintaining professionalism.
 
----
 
 # DeepCoder Assistant
 
@@ -134,4 +132,3 @@ You can author your README using Visual Studio Code. Here are some useful editor
 
 ---
 
-This updated version is **contribution-friendly**, **engaging**, and **developer-focused**. It encourages collaboration while clearly explaining how to use and contribute to the project. Let me know if you’d like further tweaks! 😊
