@@ -2,37 +2,26 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import axios from "axios";
-import { getWebviewContent } from "./webview/webview";
+import { SidebarProvider } from "./SidebarProvider";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  // This line of code will only be executed once when your extension is activated
-  console.log('Congratulations, your extension "deepcoder" is now active!');
+  const sidebarProvider = new SidebarProvider(context.extensionUri, context);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      "deepcoder.sidebar",
+      sidebarProvider
+    )
+  );
 
-  // Register command to open chat
+  // Register the command to open the chat
   let disposable = vscode.commands.registerCommand(
     "ai-assistant.openChat",
     async () => {
-      const apiKey = await context.secrets.get("deepseekKey");
-      if (!apiKey) {
-        const key = await vscode.window.showInputBox({
-          prompt: "Enter your Deepseek API key",
-          password: true,
-        });
-        if (key) {
-          await context.secrets.store("deepseekKey", key);
-        } else {
-          vscode.window.showErrorMessage("API key is required");
-          return;
-        }
-      }
-
-      // Create chat panel
-      const panel = vscode.window.createWebviewPanel(
-        "aiChat",
-        "AI Assistant",
+      const webviewView = await vscode.window.createWebviewPanel(
+        "deepcoderChat",
+        "DeepCoder Chat",
         vscode.ViewColumn.One,
         {
           enableScripts: true,
@@ -40,39 +29,32 @@ export function activate(context: vscode.ExtensionContext) {
         }
       );
 
-      panel.webview.html = getWebviewContent();
+      // Prompt for API key every time
+      const apiKey = await vscode.window.showInputBox({
+        prompt: "Enter your Deepseek API key",
+        password: true,
+      });
+      if (!apiKey) {
+        vscode.window.showErrorMessage("API key is required to use the chat.");
+        return; // Exit if no API key is provided
+      }
 
-      // Handle messages from webview
-      panel.webview.onDidReceiveMessage(async (message) => {
-        try {
-          if (message.type === "userInput") {
-            panel.webview.postMessage({ type: "status", text: "Thinking..." });
+      // Set up the chat interface
+      webviewView.webview.html = sidebarProvider.getHtmlForWebview(
+        webviewView.webview,
+        apiKey
+      );
 
-            console.log("Sending request to API..."); // Debug log
-            // Get current editor context
-            const activeEditor = vscode.window.activeTextEditor;
-            const codeContext = activeEditor?.document.getText() || "";
-
-            const response = await callAIApi(
-              message.text,
-              codeContext,
-              context
-            );
-            console.log("Received response:", response); // Debug log
-
-            panel.webview.postMessage({
+      // Handle messages from the webview
+      webviewView.webview.onDidReceiveMessage(async (data) => {
+        switch (data.type) {
+          case "sendMessage":
+            const response = await sidebarProvider.callAIApi(data.text, apiKey);
+            webviewView.webview.postMessage({
               type: "response",
               text: response,
             });
-          }
-        } catch (error) {
-          console.error("Error details:", error); // Debug log
-          const errorMessage =
-            error instanceof Error ? error.message : "Unknown error occurred";
-          panel.webview.postMessage({
-            type: "error",
-            text: "The server is busy. Please try again later.",
-          });
+            break;
         }
       });
     }
@@ -161,7 +143,7 @@ async function callAIApi(
         response.data.choices &&
         response.data.choices.length > 0
       ) {
-        return response.data.choices[0].message.content;
+        return `\`\`\`\n${response.data.choices[0].message.content}\n\`\`\``;
       } else {
         console.error("Unexpected response structure:", response.data);
         return "The server is busy. Please try again later."; // Return user-friendly message
@@ -198,4 +180,33 @@ async function callAIApi(
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  console.log("DeepCoder Assistant deactivated!"); // Log when the extension is deactivated
+}
+
+function getWebviewContent(apiKey: string): string {
+  return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>DeepCoder Chat</title>
+    </head>
+    <body>
+        <h1>DeepCoder Chat</h1>
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button id="sendButton">Send</button>
+        <div id="chatWindow"></div>
+        <script>
+            const vscode = acquireVsCodeApi();
+            document.getElementById('sendButton').onclick = () => {
+                const message = document.getElementById('userInput').value;
+                if (message) {
+                    vscode.postMessage({ type: 'sendMessage', text: message, apiKey: '${apiKey}' });
+                    document.getElementById('userInput').value = '';
+                }
+            };
+        </script>
+    </body>
+    </html>`;
+}

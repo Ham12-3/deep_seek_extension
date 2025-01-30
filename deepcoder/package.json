@@ -1,66 +1,56 @@
 {
-  "name": "DeepCoder-assistant",
+  "name": "deepcoder-assistant",
   "displayName": "DeepCoder Assistant",
   "description": "DeepCoder is is your intelligent coding companion, seamlessly integrated into VS Code and Cursor. Powered by advanced AI, it provides real-time code suggestions, debugging help, and instant answers to your programming questions—all without leaving your editor. Whether you're writing a new feature, debugging complex logic, or learning a new framework, CodeAI Assistant is here to supercharge your productivity.",
-  "version": "1.0.0",
-  "publisher": "your-publisher-name",
+  "version": "1.0.2",
+  "publisher": "AbdulhamidSonaike1",
   "icon": "deepcoder.png",
   "engines": {
-    "vscode": "^1.96.0"
+    "vscode": "^1.85.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ham12-3/deep_seek_extension.git"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:ai-assistant.openChat"
+    "onCommand:ai-assistant.openChat",
+    "onView:deepcoder.sidebar"
   ],
   "main": "./dist/extension.js",
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.12.15"
+  },
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "deepcoderChatContainer",
+          "title": "DeepCoder",
+          "icon": "deepcoder.svg"
+        }
+      ]
+    },
+    "views": {
+      "deepcoderChatContainer": [
+        {
+          "type": "webview",
+          "id": "deepcoder.sidebar",
+          "name": "DeepCoder Chat"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "ai-assistant.openChat",
         "title": "Open AI Chat"
       }
-    ],
-    "configuration": {
-      "title": "AI Assistant",
-      "properties": {
-        "aiAssistant.model": {
-          "type": "string",
-          "default": "gpt-4",
-          "description": "AI model to use"
-        }
-      }
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run package",
-    "compile": "npm run check-types && npm run lint && node esbuild.js",
-    "watch": "npm-run-all -p watch:*",
-    "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
-    "package": "npm run check-types && npm run lint && node esbuild.js --production",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "check-types": "tsc --noEmit",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.85.0",
-    "@typescript-eslint/eslint-plugin": "^8.17.0",
-    "@typescript-eslint/parser": "^8.17.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "esbuild": "^0.24.0",
-    "eslint": "^9.16.0",
-    "npm-run-all": "^4.1.5",
-    "typescript": "^5.7.2"
-  },
-  "dependencies": {
-    "axios": "^1.7.9"
+    ]
   }
 }
